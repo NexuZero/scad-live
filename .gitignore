@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production builds
+/build
+/dist
+
+# Environment variables — never commit real secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Committed: .env.example (safe template with no real values)
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+/coverage
+
+# Claude Code session files
+.claude/
+
+# Stale duplicate — to be removed post-audit
+dashboard-src/
+
+# Notes / personal working files
+2026_05_03.md
+Note/

@@ -1,0 +1,391 @@
+/* SCAD MAP Live — Global Design System (Roadmap Phase A) */
+/* Plugin: ui-ux-pro-max — Dark Mode OLED + Data-Dense + Accessible & Ethical */
+
+* {
+  box-sizing: border-box;
+}
+
+/* ── Font Stack ────────────────────────────────────────────────────── */
+/* Fira Code: KPI numbers, timestamps, monospace data */
+/* Fira Sans: all UI text, labels, body                               */
+
+:root {
+  --font-body: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Fira Code', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+
+  /* ── Type Scale ─────────────────────────────────────────── */
+  --text-xs:   11px;
+  --text-sm:   12px;
+  --text-base: 13px;
+  --text-md:   14px;
+  --text-lg:   16px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  32px;
+
+  /* ── Spacing (8pt grid) ─────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ── Elevation / Z-Index Scale ──────────────────────────── */
+  --z-sidebar:  20;
+  --z-dropdown: 40;
+  --z-modal:    100;
+  --z-toast:    200;
+
+  /* ── Sidebar ─────────────────────────────────────────────── */
+  --sidebar-width:           220px;
+  --sidebar-width-collapsed: 60px;
+
+  /* ── Animation ───────────────────────────────────────────── */
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   350ms;
+  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in:  cubic-bezier(0.4, 0.0, 1, 1);
+
+  /* ── Light Theme (default) ───────────────────────────────── */
+  /* Background */
+  --bg-primary:    #F8FAFC;
+  --bg-secondary:  #FFFFFF;
+  --bg-tertiary:   #fafafa;
+  --bg-card:       #FFFFFF;
+  --bg-hover:      #f0f4f8;
+  --bg-input:      #FFFFFF;
+  --bg-sidebar:    #1a1a2e;
+  --bg-muted:      #E8ECF1;
+
+  /* Text */
+  --text-primary:   #020617;
+  --text-secondary: #334155;
+  --text-muted:     #64748B;
+  --text-faint:     #94A3B8;
+  --text-disabled:  #CBD5E1;
+  --text-inverse:   #ffffff;
+
+  /* Borders */
+  --border-default: #E2E8F0;
+  --border-strong:  #CBD5E1;
+  --border-light:   #F1F5F9;
+
+  /* Accents (same in both themes) */
+  --accent-blue:         #4FC3F7;
+  --accent-blue-light:   #E0F7FA;
+  --accent-green:        #22C55E;
+  --accent-green-light:  #DCFCE7;
+  --accent-orange:       #F59E0B;
+  --accent-orange-light: #FEF3C7;
+  --accent-red:          #EF4444;
+  --accent-red-light:    #FEE2E2;
+  --accent-teal:         #14B8A6;
+  --accent-teal-light:   #CCFBF1;
+  --accent-purple:       #A855F7;
+  --accent-purple-light: #F3E8FF;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+
+  /* Map overlays */
+  --map-overlay-bg:     rgba(255, 255, 255, 0.92);
+  --map-overlay-border: rgba(0, 0, 0, 0.1);
+
+  /* Status pills */
+  --status-setup-bg:          #F1F5F9;
+  --status-setup-fg:          #64748B;
+  --status-active-bg:         #DCFCE7;
+  --status-active-fg:         #15803D;
+  --status-in-progress-bg:    #FEF3C7;
+  --status-in-progress-fg:    #B45309;
+  --status-completed-bg:      #E0F7FA;
+  --status-completed-fg:      #0369A1;
+  --status-paused-bg:         #FEE2E2;
+  --status-paused-fg:         #B91C1C;
+
+  /* Metric colors */
+  --metric-good: #22C55E;
+  --metric-warn: #F59E0B;
+  --metric-bad:  #EF4444;
+
+  /* Transitions */
+  --transition-theme: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Dark Theme ───────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  /* Background — OLED dark palette (plugin recommendation) */
+  --bg-primary:   #020617;
+  --bg-secondary: #0F172A;
+  --bg-tertiary:  #0E1223;
+  --bg-card:      #0E1223;
+  --bg-hover:     #1E293B;
+  --bg-input:     #0E1223;
+  --bg-sidebar:   #0a0f18;
+  --bg-muted:     #1A1E2F;
+
+  /* Text */
+  --text-primary:   #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted:     #94A3B8;
+  --text-faint:     #475569;
+  --text-disabled:  #334155;
+  --text-inverse:   #020617;
+
+  /* Borders */
+  --border-default: #334155;
+  --border-strong:  #475569;
+  --border-light:   #1E293B;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+
+  /* Map overlays */
+  --map-overlay-bg:     rgba(14, 18, 35, 0.94);
+  --map-overlay-border: rgba(255, 255, 255, 0.08);
+
+  /* Status pills — dark variants */
+  --status-setup-bg:          #1E293B;
+  --status-setup-fg:          #94A3B8;
+  --status-active-bg:         rgba(34, 197, 94, 0.15);
+  --status-active-fg:         #4ADE80;
+  --status-in-progress-bg:    rgba(245, 158, 11, 0.15);
+  --status-in-progress-fg:    #FCD34D;
+  --status-completed-bg:      rgba(79, 195, 247, 0.15);
+  --status-completed-fg:      #7DD3FC;
+  --status-paused-bg:         rgba(239, 68, 68, 0.15);
+  --status-paused-fg:         #F87171;
+
+  /* Metric colors */
+  --metric-good: #4ADE80;
+  --metric-warn: #FCD34D;
+  --metric-bad:  #F87171;
+}
+
+/* ── Base Styles ──────────────────────────────────────────────────── */
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: var(--transition-theme);
+}
+
+/* ── Interactive State Defaults ────────────────────────────────────── */
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Focus rings — WCAG AA (keyboard navigation) */
+:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ── Skeleton Loader Animation ─────────────────────────────────────── */
+
+@keyframes skeleton-pulse {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-muted) 25%,
+    var(--bg-hover) 50%,
+    var(--bg-muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* ── Pulse Animation (status indicators) ──────────────────────────── */
+
+@keyframes pulse {
+  0%   { opacity: 1; transform: scale(1); }
+  50%  { opacity: 0.5; transform: scale(1.3); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Sidebar Slide Animation ──────────────────────────────────────── */
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Toast Slide In ───────────────────────────────────────────────── */
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Scrollbar Styling ────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* ── MapLibre Overrides ───────────────────────────────────────────── */
+
+.maplibregl-popup-content {
+  border-radius: 10px !important;
+  padding: 14px !important;
+  box-shadow: var(--shadow-lg) !important;
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-default) !important;
+  font-family: var(--font-body) !important;
+  font-size: var(--text-sm) !important;
+}
+
+.maplibregl-popup-close-button {
+  font-size: 16px;
+  padding: 4px 8px;
+  color: var(--text-muted);
+}
+
+.maplibregl-canvas {
+  outline: none;
+}
+
+/* ── Responsive Scaling: 30"–110" Screens ────────────────────────── */
+/*
+   Ops rooms use screens from ~30" desk monitors up to 110" video walls.
+   We use clamp() for fluid font scaling, and viewport-aware breakpoints
+   so content stays readable at any display density.
+
+   Reference sizes:
+     30" @ 2560×1440  → 1px ≈ 0.014mm  → base 13px feels normal
+     55" @ 3840×2160  → 1px ≈ 0.014mm  → same PPI, fine
+     85" @ 3840×2160  → 1px ≈ 0.022mm  → text needs boost
+     110" @ 3840×2160 → 1px ≈ 0.029mm  → text needs significant boost
+
+   Strategy: scale root font-size up at large viewport widths,
+   then let all `em`-based layouts scale naturally.
+*/
+
+/* 2K / QHD (2560px+) */
+@media (min-width: 2560px) {
+  :root {
+    --text-xs:   13px;
+    --text-sm:   14px;
+    --text-base: 15px;
+    --text-md:   16px;
+    --text-lg:   18px;
+    --text-xl:   22px;
+    --text-2xl:  28px;
+    --text-3xl:  36px;
+    --sidebar-width:           260px;
+    --sidebar-width-collapsed: 72px;
+  }
+  body { font-size: 15px; }
+}
+
+/* 4K / UHD (3840px+) — large ops room displays 55"–85" */
+@media (min-width: 3840px) {
+  :root {
+    --text-xs:   15px;
+    --text-sm:   16px;
+    --text-base: 18px;
+    --text-md:   20px;
+    --text-lg:   22px;
+    --text-xl:   26px;
+    --text-2xl:  32px;
+    --text-3xl:  44px;
+    --sidebar-width:           300px;
+    --sidebar-width-collapsed: 80px;
+    --space-2:  10px;
+    --space-4:  20px;
+    --space-6:  28px;
+  }
+  body { font-size: 18px; }
+}
+
+/* 8K / Ultra-wide video wall (5120px+) — 100"–110" displays */
+@media (min-width: 5120px) {
+  :root {
+    --text-xs:   18px;
+    --text-sm:   20px;
+    --text-base: 22px;
+    --text-md:   24px;
+    --text-lg:   28px;
+    --text-xl:   34px;
+    --text-2xl:  42px;
+    --text-3xl:  56px;
+    --sidebar-width:           360px;
+    --sidebar-width-collapsed: 96px;
+  }
+  body { font-size: 22px; }
+}
+
+/* Fluid font size for ALL sizes using clamp() */
+/* Smoothly scales from 13px at 1024px up to 22px at 5120px */
+@supports (font-size: clamp(1px, 1vw, 2px)) {
+  body {
+    font-size: clamp(13px, 0.4vw + 9px, 22px);
+  }
+}
+
+/* Large display: more breathing room in layout */
+@media (min-width: 1920px) {
+  :root {
+    --space-4:  18px;
+    --space-6:  26px;
+    --space-8:  36px;
+  }
+}
+
+/* ── Reduced Motion ───────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .skeleton {
+    animation: none;
+    background: var(--bg-muted);
+  }
+}

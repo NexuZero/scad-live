@@ -1,0 +1,31 @@
+household_id,latitude,longitude,name_en,name_ar,phone,eid,age,education,marital_status,building_id,floor_number,unit_number,status,assigned_to
+H-001,24.4630,54.3640,Saeed Mohammed,سعيد محمد,+971551001001,784-1990-1234567-1,34,Bachelor,Married,,,,pending,FW-001
+H-002,24.4645,54.3655,Khaled Ibrahim,خالد إبراهيم,+971551001002,784-1985-2345678-2,39,Master,Married,,,,pending,FW-001
+H-003,24.4620,54.3670,Fatima Ali,فاطمة علي,+971551001003,784-1992-3456789-3,32,Bachelor,Single,,,,pending,FW-002
+H-004,24.4610,54.3695,Omar Hassan,عمر حسن,+971551001004,784-1988-4567890-4,36,Diploma,Married,,,,pending,FW-002
+H-005,24.4655,54.3710,Maryam Youssef,مريم يوسف,+971551001005,784-1995-5678901-5,29,Bachelor,Single,,,,pending,FW-003
+H-006,24.4670,54.3580,Ahmad Nasser,أحمد ناصر,+971551001006,784-1980-6789012-6,44,PhD,Married,,,,pending,FW-003
+H-007,24.4580,54.3620,Noura Khalid,نورة خالد,+971551001007,784-1993-7890123-7,31,Bachelor,Single,,,,pending,FW-004
+H-008,24.4595,54.3660,Rashed Sultan,راشد سلطان,+971551001008,784-1987-8901234-8,37,Master,Married,,,,pending,FW-004
+H-009,24.4640,54.3600,Hessa Ahmed,حصة أحمد,+971551001009,784-1991-9012345-9,33,Bachelor,Married,,,,pending,FW-005
+H-010,24.4615,54.3590,Sultan Rashid,سلطان راشد,+971551001010,784-1983-0123456-0,41,Diploma,Divorced,,,,pending,FW-005
+H-011,24.4660,54.3625,Aisha Mohammed,عائشة محمد,+971551001011,784-1996-1234560-1,28,High School,Single,,,,pending,FW-006
+H-012,24.4635,54.3680,Hamad Ali,حمد علي,+971551001012,784-1982-2345601-2,42,Bachelor,Married,,,,pending,FW-006
+H-013,24.4590,54.3700,Latifa Saeed,لطيفة سعيد,+971551001013,784-1994-3456012-3,30,Master,Single,,,,pending,FW-007
+H-014,24.4575,54.3645,Mohammed Obaid,محمد عبيد,+971551001014,784-1986-4560123-4,38,Bachelor,Married,,,,pending,FW-007
+H-015,24.4650,54.3570,Shamma Hamdan,شمّا حمدان,+971551001015,784-1990-5601234-5,34,Diploma,Married,,,,pending,FW-008
+H-016,24.4625,54.3550,Ali Mansour,علي منصور,+971551001016,784-1984-6012345-6,40,Bachelor,Widowed,,,,pending,FW-008
+H-017,24.4605,54.3610,Maitha Abdullah,ميثاء عبدالله,+971551001017,784-1997-7012340-7,27,Bachelor,Single,,,,pending,FW-009
+H-018,24.4585,54.3585,Nasser Mohammed,ناصر محمد,+971551001018,784-1981-8012345-8,43,High School,Married,,,,pending,FW-009
+H-019,24.4665,54.3690,Salama Rashid,سلامة راشد,+971551001019,784-1993-9012340-9,31,Bachelor,Single,,,,pending,FW-010
+H-020,24.4640,54.3720,Ibrahim Khalid,إبراهيم خالد,+971551001020,784-1989-0120345-0,35,Master,Married,,,,pending,FW-010
+H-021,24.4610,54.3565,Jawaher Sultan,جواهر سلطان,+971551001021,784-1995-1230456-1,29,Bachelor,Single,,,,pending,FW-011
+H-022,24.4570,54.3630,Saif Ahmed,سيف أحمد,+971551001022,784-1987-2340567-2,37,Diploma,Married,,,,pending,FW-011
+H-023,24.4598,54.3650,Reem Al Mansouri,ريم المنصوري,+971551001023,784-1992-3450678-3,32,Bachelor,Married,BLD-01,3,301,pending,FW-012
+H-024,24.4598,54.3650,Khawla Al Nuaimi,خولة النعيمي,+971551001024,784-1988-4560789-4,36,Master,Single,BLD-01,5,502,pending,FW-012
+H-025,24.4622,54.3672,Mansour Al Dhaheri,منصور الظاهري,+971551001025,784-1985-5670890-5,39,PhD,Married,BLD-02,2,204,pending,FW-013
+H-026,24.4622,54.3672,Amna Al Falasi,آمنة الفلاسي,+971551001026,784-1991-6780901-6,33,Bachelor,Married,BLD-02,7,710,pending,FW-013
+H-027,24.4645,54.3615,Moza Al Shamsi,موزة الشامسي,+971551001027,784-1994-7890012-7,30,Diploma,Single,BLD-03,1,105,pending,FW-014
+H-028,24.4645,54.3615,Youssef Al Kaabi,يوسف الكعبي,+971551001028,784-1986-8900123-8,38,Bachelor,Married,BLD-03,4,408,pending,FW-014
+H-029,24.4560,54.3595,Hind Al Ameri,هند العامري,+971551001029,784-1993-9010234-9,31,Master,Single,BLD-04,6,603,pending,FW-015
+H-030,24.4560,54.3595,Obaid Al Mheiri,عبيد المهيري,+971551001030,784-1984-0120345-0,40,Bachelor,Married,BLD-04,2,201,pending,FW-015
