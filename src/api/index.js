@@ -2211,22 +2211,90 @@ export async function fetchBuildingHouseholds(buildingId) {
 // Tasks API — with localStorage demo fallback
 // ═══════════════════════════════════════════════════════════════════
 
+// Task categories for the thread-based task system
+export const TASK_CATEGORIES = [
+  { id: 'weekly_report',   label: 'Weekly Report',       color: '#4FC3F7' },
+  { id: 'daily_report',    label: 'Daily Report',         color: '#22C55E' },
+  { id: 'field_issue',     label: 'Field Issue',          color: '#EF4444' },
+  { id: 'technical',       label: 'Technical Difficulty', color: '#F59E0B' },
+  { id: 'documentation',   label: 'Documentation',        color: '#A855F7' },
+  { id: 'project_problem', label: 'Project Challenge',    color: '#F97316' },
+  { id: 'normal',          label: 'General Task',         color: '#94A3B8' },
+];
+
 function _demoTasks() {
-  const stored = localStorage.getItem('demo_tasks');
+  const stored = localStorage.getItem('demo_tasks_v2');
   if (stored) try { return JSON.parse(stored); } catch {}
+  const id1 = crypto.randomUUID(), id2 = crypto.randomUUID(), id3 = crypto.randomUUID(),
+        id4 = crypto.randomUUID(), id5 = crypto.randomUUID(), id6 = crypto.randomUUID();
   const tasks = [
-    { id: crypto.randomUUID(), title: 'Review Al Reem Survey Progress', description: 'Check completion rates and flag delayed areas for follow-up.', project_id: 'proj-1', project_name: 'Abu Dhabi Residential Survey', assigned_to: 'usr-2', assigned_to_name: 'Fatima Al Zaabi', due_date: new Date(Date.now() + 2 * 86400000).toISOString(), priority: 'high', status: 'open', created_at: new Date().toISOString() },
-    { id: crypto.randomUUID(), title: 'Upload Weekly Researcher Reports', description: 'Compile and upload all researcher daily logs to the project portal.', project_id: 'proj-1', project_name: 'Abu Dhabi Residential Survey', assigned_to: 'usr-3', assigned_to_name: 'Mohammed Al Hammadi', due_date: new Date(Date.now() + 1 * 86400000).toISOString(), priority: 'medium', status: 'in-progress', created_at: new Date().toISOString() },
-    { id: crypto.randomUUID(), title: 'Validate Geofence Boundaries - Al Ain', description: 'Confirm geofence for Al Ain Agricultural Survey matches the planned area.', project_id: 'proj-2', project_name: 'Al Ain Agricultural Survey', assigned_to: 'usr-3', assigned_to_name: 'Mohammed Al Hammadi', due_date: new Date(Date.now() - 1 * 86400000).toISOString(), priority: 'high', status: 'done', created_at: new Date().toISOString() },
-    { id: crypto.randomUUID(), title: 'Brief New Field Workers', description: 'Conduct orientation for 4 new field workers joining Traffic Flow Analysis.', project_id: 'proj-3', project_name: 'Traffic Flow Analysis', assigned_to: 'usr-2', assigned_to_name: 'Fatima Al Zaabi', due_date: new Date(Date.now() + 4 * 86400000).toISOString(), priority: 'low', status: 'open', created_at: new Date().toISOString() },
-    { id: crypto.randomUUID(), title: 'Coordinate Battery Swap for FW-012', description: 'FW-012 flagged low battery. Arrange handoff point in Sector C.', project_id: 'proj-1', project_name: 'Abu Dhabi Residential Survey', assigned_to: 'usr-2', assigned_to_name: 'Fatima Al Zaabi', due_date: new Date(Date.now() + 0.5 * 86400000).toISOString(), priority: 'high', status: 'in-progress', created_at: new Date().toISOString() },
+    {
+      id: id1, title: 'Review Al Reem Survey Progress',
+      description: 'Check completion rates across all sectors and flag any delayed areas for immediate follow-up. Prepare a summary for the weekly briefing.',
+      project_id: 'proj-1', project_name: 'Abu Dhabi Residential Survey',
+      assigned_to: 'usr-2', assigned_to_name: 'Fatima Al Zaabi',
+      created_by: 'usr-1', created_by_name: 'Admin User',
+      due_date: new Date(Date.now() + 2 * 86400000).toISOString(),
+      priority: 'high', status: 'open', category: 'weekly_report',
+      created_at: new Date(Date.now() - 86400000).toISOString(),
+    },
+    {
+      id: id2, title: 'Upload Weekly Researcher Reports',
+      description: 'Compile and upload all researcher daily logs to the project portal. Include GPS coverage maps and sample completion breakdown by region.',
+      project_id: 'proj-1', project_name: 'Abu Dhabi Residential Survey',
+      assigned_to: 'usr-3', assigned_to_name: 'Mohammed Al Hammadi',
+      created_by: 'usr-2', created_by_name: 'Fatima Al Zaabi',
+      due_date: new Date(Date.now() + 1 * 86400000).toISOString(),
+      priority: 'medium', status: 'in-progress', category: 'daily_report',
+      created_at: new Date(Date.now() - 2 * 86400000).toISOString(),
+    },
+    {
+      id: id3, title: 'Validate Geofence Boundaries - Al Ain',
+      description: 'Confirm geofence polygon for Al Ain Agricultural Survey matches the approved area from the GIS team. Report any discrepancies.',
+      project_id: 'proj-2', project_name: 'Al Ain Agricultural Survey',
+      assigned_to: 'usr-3', assigned_to_name: 'Mohammed Al Hammadi',
+      created_by: 'usr-2', created_by_name: 'Fatima Al Zaabi',
+      due_date: new Date(Date.now() - 1 * 86400000).toISOString(),
+      priority: 'high', status: 'done', category: 'technical',
+      created_at: new Date(Date.now() - 4 * 86400000).toISOString(),
+    },
+    {
+      id: id4, title: 'Brief New Field Workers',
+      description: 'Conduct orientation for 4 new field workers joining the Traffic Flow Analysis team. Cover device setup, survey protocol, and geofence rules.',
+      project_id: 'proj-3', project_name: 'Traffic Flow Analysis',
+      assigned_to: 'usr-2', assigned_to_name: 'Fatima Al Zaabi',
+      created_by: 'usr-1', created_by_name: 'Admin User',
+      due_date: new Date(Date.now() + 4 * 86400000).toISOString(),
+      priority: 'low', status: 'open', category: 'documentation',
+      created_at: new Date(Date.now() - 86400000).toISOString(),
+    },
+    {
+      id: id5, title: 'Coordinate Battery Swap for FW-012',
+      description: 'FW-012 flagged critical battery level (< 10%). Arrange emergency handoff point in Sector C by 14:00 GST. Notify supervisor on site.',
+      project_id: 'proj-1', project_name: 'Abu Dhabi Residential Survey',
+      assigned_to: 'usr-2', assigned_to_name: 'Fatima Al Zaabi',
+      created_by: 'usr-2', created_by_name: 'Fatima Al Zaabi',
+      due_date: new Date(Date.now() + 3 * 3600000).toISOString(),
+      priority: 'high', status: 'in-progress', category: 'field_issue',
+      created_at: new Date(Date.now() - 3600000).toISOString(),
+    },
+    {
+      id: id6, title: 'Document Q1 Project Challenges',
+      description: 'Compile all project challenges encountered in Q1 2026 across active operations. Include technical issues, field access problems, and staffing gaps.',
+      project_id: 'proj-1', project_name: 'Abu Dhabi Residential Survey',
+      assigned_to: 'usr-3', assigned_to_name: 'Mohammed Al Hammadi',
+      created_by: 'usr-2', created_by_name: 'Fatima Al Zaabi',
+      due_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+      priority: 'medium', status: 'open', category: 'project_problem',
+      created_at: new Date(Date.now() - 3 * 86400000).toISOString(),
+    },
   ];
-  localStorage.setItem('demo_tasks', JSON.stringify(tasks));
+  localStorage.setItem('demo_tasks_v2', JSON.stringify(tasks));
   return tasks;
 }
 
 function _demoSaveTasks(tasks) {
-  localStorage.setItem('demo_tasks', JSON.stringify(tasks));
+  localStorage.setItem('demo_tasks_v2', JSON.stringify(tasks));
 }
 
 export async function fetchTasks(filters = {}) {
@@ -2281,6 +2349,67 @@ export async function deleteTask(taskId) {
     return { success: true };
   }
   return request(`/api/tasks/${taskId}`, { method: 'DELETE' });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Task Thread / Comment API — with localStorage demo fallback
+// ═══════════════════════════════════════════════════════════════════
+
+function _demoThreads(taskId) {
+  const key = `demo_thread_${taskId}`;
+  const stored = localStorage.getItem(key);
+  if (stored) try { return JSON.parse(stored); } catch {}
+  // Seed demo thread entries for the first two tasks
+  const seeds = {
+    // injected during _demoTasks init — uses index not uuid
+  };
+  return seeds[taskId] || [];
+}
+
+function _demoSaveThreads(taskId, entries) {
+  localStorage.setItem(`demo_thread_${taskId}`, JSON.stringify(entries));
+}
+
+export async function fetchTaskThread(taskId) {
+  if (DEMO_MODE) return _demoThreads(taskId);
+  return request(`/api/tasks/${taskId}/thread`);
+}
+
+export async function addTaskComment(taskId, { text, attachments = [] }) {
+  const user = getStoredName() || 'User';
+  if (DEMO_MODE) {
+    const entry = {
+      id: crypto.randomUUID(),
+      type: 'comment',
+      author: user,
+      text,
+      attachments, // [{ name, size, type }] — metadata only in demo
+      created_at: new Date().toISOString(),
+    };
+    const thread = _demoThreads(taskId);
+    thread.push(entry);
+    _demoSaveThreads(taskId, thread);
+    return entry;
+  }
+  return request(`/api/tasks/${taskId}/thread`, { method: 'POST', body: JSON.stringify({ text, attachments }) });
+}
+
+export async function addTaskActivity(taskId, action) {
+  const user = getStoredName() || 'User';
+  if (DEMO_MODE) {
+    const entry = {
+      id: crypto.randomUUID(),
+      type: 'activity',
+      author: user,
+      action, // e.g. 'changed status to done', 'assigned to Fatima'
+      created_at: new Date().toISOString(),
+    };
+    const thread = _demoThreads(taskId);
+    thread.push(entry);
+    _demoSaveThreads(taskId, thread);
+    return entry;
+  }
+  return request(`/api/tasks/${taskId}/thread/activity`, { method: 'POST', body: JSON.stringify({ action }) });
 }
 
 // ═══════════════════════════════════════════════════════════════════

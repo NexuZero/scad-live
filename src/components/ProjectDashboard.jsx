@@ -709,7 +709,7 @@ function deriveStats(projects) {
 const s = {
   page: { padding: '20px 28px', maxWidth: '1440px', margin: '0 auto' },
   topBar: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' },
-  title: { margin: 0, fontSize: '24px', fontWeight: 800, color: '#1a1a2e', letterSpacing: '-0.5px' },
+  title: { margin: 0, fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px', fontFamily: 'var(--font-body)' },
   subtitle: { fontSize: '12px', color: '#888', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '12px' },
   liveIndicator: { display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#2e7d32', fontWeight: 600, fontSize: '11px' },
   liveDot: { width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#2e7d32', animation: 'pulse 2s infinite', boxShadow: '0 0 6px #2e7d3266' },
@@ -723,30 +723,31 @@ const s = {
   // KPI cards
   kpiRow: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' },
   kpiCard: {
-    padding: '20px', backgroundColor: '#fff', borderRadius: '12px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.06)', textAlign: 'center',
+    padding: '20px', backgroundColor: 'var(--bg-card)', borderRadius: '12px',
+    boxShadow: 'var(--shadow-sm)', textAlign: 'center',
     borderTop: '3px solid transparent', position: 'relative',
+    border: '1px solid var(--border-default)',
   },
   kpiIcon: { fontSize: '20px', marginBottom: '4px' },
-  kpiValue: { fontSize: '36px', fontWeight: 800, lineHeight: 1.1 },
-  kpiLabel: { fontSize: '11px', color: '#888', marginTop: '4px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' },
-  kpiSub: { fontSize: '11px', color: '#aaa', marginTop: '6px' },
+  kpiValue: { fontSize: '36px', fontWeight: 800, lineHeight: 1.1, fontFamily: 'var(--font-mono)' },
+  kpiLabel: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px' },
+  kpiSub: { fontSize: '11px', color: 'var(--text-faint)', marginTop: '6px' },
 
   // Section headers
   sectionHeader: {
-    fontSize: '13px', fontWeight: 700, color: '#1a1a2e', textTransform: 'uppercase',
-    letterSpacing: '1px', marginBottom: '12px', marginTop: '8px',
-    paddingBottom: '8px', borderBottom: '2px solid #eee',
+    fontSize: '11px', fontWeight: 700, color: 'var(--text-faint)', textTransform: 'uppercase',
+    letterSpacing: '0.1em', marginBottom: '12px', marginTop: '8px',
+    paddingBottom: '8px', borderBottom: '1px solid var(--border-default)',
   },
 
   // Panels
   lifecycleGrid: { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginBottom: '24px' },
   performanceGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' },
-  panel: { backgroundColor: '#fff', borderRadius: '10px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', overflow: 'hidden' },
-  panelHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderBottom: '1px solid #f0f0f0' },
-  panelTitle: { fontSize: '13px', fontWeight: 700, color: '#333' },
-  panelBadge: { padding: '2px 8px', borderRadius: '4px', fontSize: '9px', fontWeight: 800, color: '#fff', backgroundColor: '#1976d2', letterSpacing: '1px' },
-  emptyPanel: { padding: '30px', textAlign: 'center', color: '#bbb', fontSize: '13px' },
+  panel: { backgroundColor: 'var(--bg-card)', borderRadius: '10px', boxShadow: 'var(--shadow-sm)', overflow: 'hidden', border: '1px solid var(--border-default)' },
+  panelHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderBottom: '1px solid var(--border-light)' },
+  panelTitle: { fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' },
+  panelBadge: { padding: '2px 8px', borderRadius: '4px', fontSize: '9px', fontWeight: 800, color: '#020617', backgroundColor: '#4FC3F7', letterSpacing: '1px' },
+  emptyPanel: { padding: '30px', textAlign: 'center', color: 'var(--text-faint)', fontSize: '13px' },
 
   // Project velocity rows
   projectList: { maxHeight: '320px', overflowY: 'auto' },
@@ -755,7 +756,7 @@ const s = {
     textDecoration: 'none', color: 'inherit', transition: 'background 0.15s', cursor: 'pointer',
   },
   velHeader: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' },
-  velName: { fontSize: '14px', fontWeight: 600, color: '#1a1a2e', flex: 1 },
+  velName: { fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', flex: 1 },
   velDays: { fontSize: '11px', color: '#888' },
   riskTag: { padding: '1px 6px', borderRadius: '3px', fontSize: '9px', fontWeight: 800, backgroundColor: '#fce4ec', color: '#c62828', letterSpacing: '0.5px' },
   velMeta: { fontSize: '11px', color: '#999', marginBottom: '6px' },
@@ -785,7 +786,7 @@ const s = {
     fontWeight: 700, fontSize: '14px', flexShrink: 0,
   },
   rCardInfo: { flex: 1, minWidth: 0 },
-  rCardName: { fontSize: '13px', fontWeight: 600, color: '#1a1a2e', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  rCardName: { fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   rCardMeta: { fontSize: '10px', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   rCardDot: { width: '10px', height: '10px', borderRadius: '50%', flexShrink: 0, boxShadow: '0 0 0 2px #fff, 0 0 0 3px currentColor' },
   rCardBarOuter: { height: '5px', backgroundColor: '#e8eaf6', borderRadius: '3px', overflow: 'hidden', marginBottom: '6px' },
@@ -794,7 +795,7 @@ const s = {
 
   // Charts
   chartsRow: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '24px' },
-  chartPanel: { backgroundColor: '#fff', borderRadius: '10px', padding: '18px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
+  chartPanel: { backgroundColor: 'var(--bg-card)', borderRadius: '10px', padding: '18px', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-default)' },
   emptyChart: { padding: '40px', textAlign: 'center', color: '#bbb', fontSize: '13px' },
 
   // Status bar (bottom)
@@ -818,7 +819,7 @@ const s = {
   },
 
   // Alert feed
-  alertPanel: { backgroundColor: '#fff', borderRadius: '10px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', overflow: 'hidden', maxHeight: '280px', overflowY: 'auto' },
+  alertPanel: { backgroundColor: 'var(--bg-card)', borderRadius: '10px', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-default)', overflow: 'hidden', maxHeight: '280px', overflowY: 'auto' },
   alertRow: { display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 16px', borderBottom: '1px solid #f5f5f5' },
   alertIcon: { fontSize: '18px', flexShrink: 0 },
   alertInfo: { flex: 1 },
