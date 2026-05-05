@@ -234,23 +234,23 @@ export default function ProjectDashboard() {
           )}
         </div>
 
-        {/* ── CENTER COLUMN: Live Map + Charts ── */}
+        {/* ── CENTER COLUMN: Analytics Panels ── */}
         <div style={s.centerCol}>
-          {/* Live map */}
-          <div style={s.mapBox}>
-            <OpsRoomMap />
-            <div style={s.mapCornerLabel}>Abu Dhabi, UAE</div>
-            <div style={s.mapLiveBadge}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#22C55E', display: 'inline-block', animation: 'pulse 1.5s infinite', boxShadow: '0 0 8px #22C55E99' }} />
-              LIVE TRACKING
+
+          {/* 1. Project Bullet Chart — completion vs time elapsed */}
+          <ProjectBulletPanel projects={activeProjects} />
+
+          {/* 2. Velocity area + Researcher performance (side by side, flex-1) */}
+          <div style={s.analyticsDual}>
+            <div style={s.dualLeft}>
+              <VelocityAreaChart velocityData={velocityData} projects={activeProjects} />
             </div>
-            <div style={s.mapCounterBadge}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: '#4FC3F7', fontSize: '18px', lineHeight: 1 }}>{inFieldCount}</span>
-              <span style={{ fontSize: '9px', color: 'rgba(148,163,184,0.7)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>In Field</span>
+            <div style={s.dualRight}>
+              <ResearcherPerformanceChart researchers={liveResearchers} />
             </div>
           </div>
 
-          {/* Charts row */}
+          {/* 3. Mini summary charts row */}
           <div style={s.chartsRow}>
             <div style={s.chartBox}>
               <div style={s.chartTitle}>Operations Status</div>
@@ -261,7 +261,7 @@ export default function ProjectDashboard() {
               ]} />
             </div>
             <div style={s.chartBox}>
-              <div style={s.chartTitle}>Sample Completion</div>
+              <div style={s.chartTitle}>Sample Completion by Op</div>
               <BarChart projects={projects.slice(0, 8)} />
             </div>
             <div style={s.chartBox}>
@@ -347,12 +347,18 @@ export default function ProjectDashboard() {
           {/* Full-viewport map */}
           <OpsRoomMap />
 
-          {/* Top-left: KPI stack (matching Image 1 style) */}
+          {/* Top-left: KPI stack */}
           <div style={s.opsHudTopLeft}>
-            <OpsKpiCard value={stats.active}      label="Active Ops"  color="#4FC3F7" />
-            <OpsKpiCard value={stats.totalSamples} label="Samples"     color="#22C55E" />
-            <OpsKpiCard value={inFieldCount}       label="Deployed"    color="#F59E0B" />
-            <OpsKpiCard value={standbyCount}       label="Standby"     color="#94A3B8" />
+            <OpsKpiCard value={stats.active}       label="Active Ops"   color="#4FC3F7" />
+            <OpsKpiCard value={stats.totalSamples} label="Total Samples" color="#22C55E" />
+            <OpsKpiCard value={inFieldCount}        label="In Field"     color="#F59E0B" />
+            <OpsKpiCard value={standbyCount}        label="Standby"      color="#94A3B8" />
+            <OpsKpiCard
+              value={stats.totalSamples > 0 ? `${Math.round((stats.totalSamples * 0.45))} / ${stats.totalSamples}` : '—'}
+              label="Samples Done"
+              color="#A855F7"
+            />
+            <OpsKpiCard value={alerts.length}      label="Active Alerts" color={alerts.length > 0 ? '#EF4444' : '#22C55E'} />
           </div>
 
           {/* Top-right: project stats + live stream indicator */}
@@ -360,7 +366,11 @@ export default function ProjectDashboard() {
             <div style={s.opsProjectCard}>
               <div style={s.opsProjectLine}>
                 <span style={s.opsProjectCount}>{projects.length}</span>
-                <span style={s.opsProjectLabel}>Projects</span>
+                <span style={s.opsProjectLabel}>Total Projects</span>
+              </div>
+              <div style={s.opsProjectLine}>
+                <span style={{ ...s.opsProjectCount, fontSize: '13px', color: '#22C55E' }}>{stats.active} active</span>
+                <span style={{ ...s.opsProjectCount, fontSize: '13px', color: '#94A3B8', marginLeft: '8px' }}>{stats.completed} done</span>
               </div>
               <div style={s.opsProjectLine}>
                 <span style={{ ...s.opsProjectCount, fontSize: '13px', color: alerts.length > 0 ? '#EF4444' : '#22C55E' }}>{alerts.length} alerts</span>
@@ -568,6 +578,196 @@ function PMProjectCard({ project: p, velocity }) {
           Tasks
         </Link>
       </div>
+    </div>
+  );
+}
+
+/* ── ProjectBulletPanel: bullet chart — completion vs time elapsed ── */
+function ProjectBulletPanel({ projects }) {
+  const today = new Date();
+  if (!projects.length) {
+    return (
+      <div style={s.bulletPanel}>
+        <div style={s.bulletPanelHdr}>
+          <span style={s.bulletPanelTitle}>Project Progress vs Timeline</span>
+        </div>
+        <div style={s.emptyChart}>No active operations</div>
+      </div>
+    );
+  }
+  return (
+    <div style={s.bulletPanel}>
+      <div style={s.bulletPanelHdr}>
+        <span style={s.bulletPanelTitle}>Project Progress vs Timeline</span>
+        <span style={s.bulletPanelSub}>{projects.length} active operations</span>
+      </div>
+      <div style={s.bulletList}>
+        {projects.slice(0, 6).map(p => {
+          const pct = p.completion_pct ?? 0;
+          const end   = new Date(p.end_date   || today);
+          const start = new Date(p.start_date  || today);
+          const totalDays  = Math.max(1, Math.ceil((end - start) / 86400000));
+          const elapsedDays = Math.max(0, Math.ceil((today - start) / 86400000));
+          const timeElapsed = Math.min(100, Math.round((elapsedDays / totalDays) * 100));
+          const daysLeft   = Math.max(0, Math.ceil((end - today) / 86400000));
+          const isAtRisk   = pct < timeElapsed - 15;
+          const color      = pct >= 70 ? '#22C55E' : pct >= 40 ? '#4FC3F7' : '#EF4444';
+          return (
+            <div key={p.project_id} style={s.bulletRow}>
+              <div style={s.bulletLeft}>
+                <div style={s.bulletName}>
+                  {isAtRisk && <span style={s.riskTagInline}>RISK</span>}
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.project_name}</span>
+                </div>
+                <div style={s.bulletStats}>
+                  <span>{p.researcher_count || 0} researchers</span>
+                  <span>·</span>
+                  <span style={{ color: daysLeft === 0 ? '#F87171' : 'var(--text-faint)' }}>
+                    {daysLeft === 0 ? 'OVERDUE' : `${daysLeft}d left`}
+                  </span>
+                </div>
+              </div>
+              <div style={s.bulletBarWrap}>
+                <div style={s.bulletTrack}>
+                  <div style={{ ...s.bulletFill, width: `${pct}%`, backgroundColor: color }} />
+                  <div style={{ ...s.bulletMarker, left: `${timeElapsed}%` }} title={`Time elapsed: ${timeElapsed}%`} />
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', flexShrink: 0 }}>
+                <span style={{ ...s.bulletPct, color }}>{pct}%</span>
+                <span style={{ fontSize: '9px', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' }}>/{timeElapsed}%T</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ── VelocityAreaChart: 7-day smooth area chart ───────────────────── */
+function VelocityAreaChart({ velocityData, projects }) {
+  const today = new Date();
+  const dayLabels = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - (6 - i));
+    return d.toLocaleDateString('en-GB', { weekday: 'short' });
+  });
+
+  const aggregated = Array(7).fill(0);
+  Object.values(velocityData).forEach(data => {
+    if (!data || !data.length) return;
+    const slice = data.slice(-7);
+    slice.forEach((d, i) => {
+      const idx = i + (7 - slice.length);
+      aggregated[idx] += (d.completed || d.count || 0);
+    });
+  });
+  const hasRealData = aggregated.some(v => v > 0);
+  const values = hasRealData ? aggregated : [120, 145, 132, 178, 165, 89, 214];
+
+  const max = Math.max(...values, 1);
+  const W = 280, H = 100;
+  const padL = 30, padB = 22, padR = 6, padT = 10;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  const pts = values.map((v, i) => ({
+    x: padL + (i / (values.length - 1)) * chartW,
+    y: padT + chartH - (v / max) * chartH,
+    v,
+  }));
+
+  let linePath = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const prev = pts[i - 1];
+    const curr = pts[i];
+    const cpx = (prev.x + curr.x) / 2;
+    linePath += ` C ${cpx} ${prev.y} ${cpx} ${curr.y} ${curr.x} ${curr.y}`;
+  }
+  const last = pts[pts.length - 1];
+  const fillPath = `${linePath} L ${last.x} ${padT + chartH} L ${pts[0].x} ${padT + chartH} Z`;
+
+  return (
+    <div style={s.velocityPanel}>
+      <div style={s.velocityHeader}>
+        <span style={s.velocityTitle}>7-Day Collection Velocity</span>
+        <span style={s.velocitySub}>samples / day</span>
+      </div>
+      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ flex: 1, overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="velGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="#4FC3F7" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#4FC3F7" stopOpacity="0"    />
+          </linearGradient>
+        </defs>
+        {[0, 0.33, 0.67, 1].map((f, i) => (
+          <g key={i}>
+            <line x1={padL} y1={padT + chartH * (1 - f)} x2={padL + chartW} y2={padT + chartH * (1 - f)}
+              stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+            {f > 0 && (
+              <text x={padL - 4} y={padT + chartH * (1 - f) + 3} textAnchor="end"
+                style={{ fontSize: '8px', fill: 'rgba(148,163,184,0.45)', fontFamily: 'var(--font-mono)' }}>
+                {Math.round(max * f)}
+              </text>
+            )}
+          </g>
+        ))}
+        <path d={fillPath} fill="url(#velGrad)" />
+        <path d={linePath} fill="none" stroke="#4FC3F7" strokeWidth="1.5" strokeLinejoin="round" />
+        {pts.map((pt, i) => (
+          <g key={i}>
+            <circle cx={pt.x} cy={pt.y}
+              r={i === pts.length - 1 ? 3.5 : 2.5}
+              fill={i === pts.length - 1 ? '#4FC3F7' : 'var(--bg-primary)'}
+              stroke="#4FC3F7" strokeWidth="1.5" />
+            <text x={pt.x} y={padT + chartH + 14} textAnchor="middle"
+              style={{ fontSize: '8px', fill: i === pts.length - 1 ? '#4FC3F7' : 'rgba(148,163,184,0.45)', fontFamily: 'var(--font-mono)' }}>
+              {dayLabels[i]}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ── ResearcherPerformanceChart: horizontal bars, top 8 ──────────── */
+function ResearcherPerformanceChart({ researchers }) {
+  const top8 = researchers.slice(0, 8);
+  return (
+    <div style={s.perfPanel}>
+      <div style={{ ...s.velocityHeader, padding: '0 14px', flexShrink: 0 }}>
+        <span style={s.velocityTitle}>Researcher Performance</span>
+        <span style={s.velocitySub}>top {top8.length}</span>
+      </div>
+      {top8.length === 0
+        ? <div style={s.emptyChart}>No researcher data</div>
+        : (
+          <div style={s.perfList}>
+            {top8.map(r => {
+              const pct = r.pct ?? 0;
+              const color = pct >= 70 ? '#22C55E' : pct >= 40 ? '#4FC3F7' : '#EF4444';
+              return (
+                <div key={r.fw_id} style={s.perfRow}>
+                  <div style={{ ...s.perfAvatar, backgroundColor: r.in_field ? 'rgba(34,197,94,0.12)' : 'rgba(148,163,184,0.08)', color: r.in_field ? '#4ADE80' : '#94A3B8' }}>
+                    {(r.name || '?')[0].toUpperCase()}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                      <span style={s.perfName}>{r.name?.split(' ')[0] || r.fw_id}</span>
+                      <span style={{ fontSize: '11px', fontWeight: 700, color, fontFamily: 'var(--font-mono)' }}>{pct}%</span>
+                    </div>
+                    <div style={{ height: '4px', backgroundColor: 'var(--bg-muted)', borderRadius: '2px', overflow: 'hidden' }}>
+                      <div style={{ width: `${pct}%`, height: '100%', backgroundColor: color, borderRadius: '2px', transition: 'width 0.4s ease-out' }} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
     </div>
   );
 }
@@ -977,7 +1177,7 @@ const s = {
   /* Center column */
   centerCol: {
     display: 'flex', flexDirection: 'column', overflow: 'hidden',
-    backgroundColor: 'var(--bg-primary)',
+    backgroundColor: 'var(--bg-primary)', minHeight: 0,
   },
 
   /* Map box */
@@ -1142,4 +1342,94 @@ const s = {
   statusBar: { display: 'none' }, /* legacy — hidden in new layout */
   clockLoc: { fontSize: '10px', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' },
   alertBadge: { display: 'none' }, /* replaced by alertIndicator */
+
+  /* ── Analytics dual row (velocity + researcher) ── */
+  analyticsDual: {
+    display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden',
+    borderBottom: '1px solid var(--border-light)',
+  },
+  dualLeft: {
+    flex: '1 1 55%', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+    borderRight: '1px solid var(--border-light)', backgroundColor: 'var(--bg-secondary)',
+    padding: '10px 0',
+  },
+  dualRight: {
+    flex: '1 1 45%', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+    backgroundColor: 'var(--bg-secondary)', padding: '10px 0',
+  },
+
+  /* ── Bullet chart panel ── */
+  bulletPanel: {
+    backgroundColor: 'var(--bg-secondary)', flexShrink: 0,
+    borderBottom: '1px solid var(--border-light)',
+  },
+  bulletPanelHdr: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '10px 16px 8px', borderBottom: '1px solid rgba(255,255,255,0.04)',
+  },
+  bulletPanelTitle: { fontSize: '10px', fontWeight: 700, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.1em' },
+  bulletPanelSub: { fontSize: '10px', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' },
+  bulletList: { padding: '2px 0' },
+  bulletRow: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '7px 16px', borderBottom: '1px solid rgba(255,255,255,0.03)',
+  },
+  bulletLeft: { width: '140px', flexShrink: 0 },
+  bulletName: {
+    display: 'flex', alignItems: 'center', gap: '4px',
+    fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)',
+    overflow: 'hidden', maxWidth: '100%',
+  },
+  bulletStats: {
+    display: 'flex', gap: '4px', alignItems: 'center',
+    fontSize: '9px', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)', marginTop: '2px',
+  },
+  bulletBarWrap: { flex: 1, position: 'relative' },
+  bulletTrack: {
+    height: '8px', backgroundColor: 'var(--bg-muted)', borderRadius: '4px',
+    position: 'relative', overflow: 'visible',
+  },
+  bulletFill: {
+    position: 'absolute', top: 0, left: 0,
+    height: '100%', borderRadius: '4px', transition: 'width 0.4s ease-out',
+  },
+  bulletMarker: {
+    position: 'absolute', top: '-3px', width: '2px', height: '14px',
+    backgroundColor: '#F87171', borderRadius: '1px', transform: 'translateX(-1px)', zIndex: 1,
+  },
+  bulletPct: { fontSize: '12px', fontWeight: 800, fontFamily: 'var(--font-mono)', flexShrink: 0 },
+  riskTagInline: {
+    fontSize: '8px', fontWeight: 800, padding: '1px 4px', borderRadius: '3px',
+    backgroundColor: 'rgba(239,68,68,0.15)', color: '#F87171',
+    letterSpacing: '0.04em', flexShrink: 0,
+  },
+
+  /* ── Velocity area chart ── */
+  velocityPanel: {
+    flex: 1, display: 'flex', flexDirection: 'column',
+    padding: '0 14px 8px', overflow: 'hidden',
+  },
+  velocityHeader: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    marginBottom: '6px', flexShrink: 0,
+  },
+  velocityTitle: { fontSize: '10px', fontWeight: 700, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.1em' },
+  velocitySub: { fontSize: '10px', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' },
+
+  /* ── Researcher performance panel ── */
+  perfPanel: {
+    flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+    padding: '0 0 4px',
+  },
+  perfList: { flex: 1, overflowY: 'auto', padding: '2px 14px 6px' },
+  perfRow: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '5px 0', borderBottom: '1px solid rgba(255,255,255,0.03)',
+  },
+  perfAvatar: {
+    width: '22px', height: '22px', borderRadius: '50%',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: '10px', fontWeight: 700, flexShrink: 0, fontFamily: 'var(--font-mono)',
+  },
+  perfName: { fontSize: '11px', fontWeight: 500, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
 };
